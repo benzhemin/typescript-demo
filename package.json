@@ -1,0 +1,20 @@
+{
+  "name": "hello-typescript",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "tsc && npm run tsc:w; npm run lite)",
+    "lite": "lite-server",
+    "tsc": "tsc",
+    "tsc:w": "tsc -w",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "concurrently": "^4.1.0",
+    "lite-server": "^2.4.0",
+    "typescript": "^3.3.1"
+  }
+}
