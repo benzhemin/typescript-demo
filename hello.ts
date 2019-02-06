@@ -10,5 +10,5 @@ class BirdWhisperer {
   }
 }
 
-let birdWhisperer = new BirdWhisperer('coo-coo-coo');
+let birdWhisperer = new BirdWhisperer('coo-coo-coo dd');
 document.body.innerHTML = birdWhisperer.chirp();
