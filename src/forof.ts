@@ -1,8 +1,9 @@
+export {};
 const colors = ['red', 'blue', 'green'];
 
 /*
 for (const [index, color] of colors.entries()) {
-  console.log(`index: ${index}, color: ${color}`);
+  console.log(`index: ${index},t color: ${color}`);
 }
 */
 
@@ -92,7 +93,7 @@ const objExt = {
 
 console.log(JSON.stringify(objExt));
 
-function plunk(o, prop = '') {
+function plunk(o: any, prop = '') {
   const propList = prop.split('.').filter(o => !!o);
 
   return propList.reduce((acc, cur) => {
@@ -109,5 +110,36 @@ const o = {
 
 console.log(JSON.stringify(plunk(o)));
 console.log(JSON.stringify(plunk(o, 'name')));
+console.log(JSON.stringify(plunk(o, 'na')));
 console.log(JSON.stringify(plunk(o, 'name.first')));
 console.log(JSON.stringify(plunk(o, 'name.fir')));
+
+
+const createNum = function() {
+  let PRIVATE = 0;
+
+  return {
+    inc(n: number) {
+      PRIVATE += n;
+      return PRIVATE;
+    },
+
+    dec(n: number) {
+      PRIVATE -= n;
+      return PRIVATE;
+    },
+
+    log() {
+      console.log(`current val ${PRIVATE}`);
+    }
+  }
+}
+
+const numOne = createNum();
+const numTwo = createNum();
+
+numOne.inc(10);
+numTwo.dec(10);
+
+numOne.log();
+numTwo.log();

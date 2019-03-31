@@ -1,3 +1,4 @@
+export {};
 console.log('hellow ts');
 
 const obj  = { a:1, b:2 };
