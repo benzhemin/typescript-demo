@@ -1,3 +1,5 @@
+import "reflect-metadata"
+
 class Person{
   
   constructor(public name: String) {
