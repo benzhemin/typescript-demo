@@ -1,5 +1,7 @@
 
 
+export const existy = (o: any) => o != null;
+
 export function ternFnExp(cond: Function, retTruth: any, retFalsy: any) {
   return cond() ? retTruth : retFalsy;
 }
@@ -55,3 +57,24 @@ export function groupByProp(arr: any[], propFn: Function) {
   }, {});
 }
 
+// 用于react component identit key generator
+export function uniqueStringWithStart(start: number) {
+  let count = start;
+  return function(prefix: string) {
+    return [prefix, count++].join('');
+  }
+}
+
+export function always(val: any) {
+  return function() {
+    return val;
+  }
+}
+
+export function cat(head: any[] = [], ...rest: any[]) {
+  return head.concat(rest);
+}
+
+export function construct(head: any, tail: any[]) {
+  return cat([head], Array.from(tail));
+}
