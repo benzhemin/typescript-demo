@@ -78,3 +78,35 @@ export function cat(head: any[] = [], ...rest: any[]) {
 export function construct(head: any, tail: any[]) {
   return cat([head], Array.from(tail));
 }
+
+/*
+简化switch - type代码
+
+const commander = dispatch(
+  isa('notify', (o: any) => { console.log(`msg ${o.message}`) }),
+  isa('complete', (o: any) => { console.log(`msg ${o.message}`)})
+);
+
+commander({type: 'notify', message: 'hello world'});
+commander({type: 'complete', message: 'complete'});
+*/
+export function dispatch(...fnList: Function[]) {
+  return function(target: any) {
+    for (const fn of fnList) {
+      const res = fn.apply(null, [target]);
+      if (existy(res)) return res;
+    }
+  }
+}
+
+export function isa(type: string, action: Function) {
+  return function (o: { type: string }) {
+    if (o.type === type) {
+      return action(o);
+    }
+  }
+}
+
+function doWhen(cond: any, action: Function) {
+  if (!!cond) return action();
+}

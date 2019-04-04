@@ -1,4 +1,4 @@
-import { ternExp, ternFnExp, identity, groupByProp, enhanceFind } from './utils';
+import { ternExp, ternFnExp, identity, groupByProp, enhanceFind, existy, dispatch, isa } from './utils';
 
 console.log('hellow ts');
 
@@ -188,4 +188,17 @@ function threeSumZero(numList: number[]) {
 
 const res = threeSumZero([-1, 0, 1, 2, -1, -4]);
 console.log(`res ${JSON.stringify(res)}`);
+
+/*
+function invoker(name: string, method: Function) {
+  return function(target, ...rest) {
+    if (!existy(target)) throw Error('must provide a target');
+
+    const targetMethod = target[name];
+    return doWhen(existy(targetMethod) && method)
+  }
+}
+*/
+
+
 
