@@ -78,3 +78,17 @@ export function cat(head: any[] = [], ...rest: any[]) {
 export function construct(head: any, tail: any[]) {
   return cat([head], Array.from(tail));
 }
+
+export function uniq(arr: any[], itereeFn: Function = identity) {
+  const set = new Set();
+  const uniqList: any[] = [];
+
+  arr.forEach((o) => {
+    const key = itereeFn(o);
+    if (!set.has(key)) {
+      set.add(key);
+      uniqList.push(o);
+    }
+  });
+  return uniqList;
+}
