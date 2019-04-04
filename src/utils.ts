@@ -107,6 +107,24 @@ export function isa(type: string, action: Function) {
   }
 }
 
-function doWhen(cond: any, action: Function) {
+export function doWhen(cond: any, action: Function) {
   if (!!cond) return action();
+}
+
+export function curry(fn: Function) {
+  return function(arg: any) {
+    return fn.apply(null, [arg]);
+  }
+}
+
+export function curryRight(fn: Function, ...rest: any[]) {
+  return function(arg: any) {
+    return fn.apply(null, [arg, ...rest]);
+  }
+}
+
+export function curryLeft(fn: Function, ...rest: any[]) {
+  return function(arg: any) {
+    return fn.apply(null, [...rest, arg]);
+  }
 }
