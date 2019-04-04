@@ -69,5 +69,18 @@ const countByRes = countBy(plays, songToString);
 console.log(`players countBy ${JSON.stringify(countByRes)}`);
 
 export function uniq(arr: any[], itereeFn: Function) {
-  
+  const set = new Set();
+  const uniqList: any[] = [];
+
+  arr.forEach((o) => {
+    const key = itereeFn(o);
+    if (!set.has(key)) {
+      set.add(key);
+      uniqList.push(o);
+    }
+  });
+  return uniqList;
 }
+
+const distinctPlayers  = uniq(plays, songToString);
+console.log(`distinct players ${JSON.stringify(distinctPlayers)}`);

@@ -128,3 +128,16 @@ export function curryLeft(fn: Function, ...rest: any[]) {
     return fn.apply(null, [...rest, arg]);
   }
 }
+export function uniq(arr: any[], itereeFn: Function = identity) {
+  const set = new Set();
+  const uniqList: any[] = [];
+
+  arr.forEach((o) => {
+    const key = itereeFn(o);
+    if (!set.has(key)) {
+      set.add(key);
+      uniqList.push(o);
+    }
+  });
+  return uniqList;
+}

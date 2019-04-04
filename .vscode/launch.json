@@ -8,7 +8,7 @@
       "type": "node",
       "request": "launch",
       "name": "Launch Program",
-      "program": "${workspaceFolder}/dist/src/${fileBasenameNoExtension}.js",
+      "program": "${workspaceFolder}/dist/${fileBasenameNoExtension}.js",
       "sourceMaps": true,
     }
   ]
