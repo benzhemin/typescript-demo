@@ -1,4 +1,8 @@
-import { ternExp, ternFnExp, identity, groupByProp, enhanceFind, existy, dispatch, isa } from './utils';
+import { 
+  ternExp, ternFnExp, identity, 
+  groupByProp, enhanceFind, existy, dispatch, isa, cycle, zip, compose, curryRight, take, compose2 
+} from './utils';
+import { curryLeft } from './curry';
 
 console.log('hellow ts');
 
@@ -200,5 +204,22 @@ function invoker(name: string, method: Function) {
 }
 */
 
+const cycleList = cycle(5, [1, 2]);
+console.log(`cycle ${JSON.stringify(cycleList)}`);
 
+const zipArr = [[1, 2, 3], ['a', 'b', 'c'], ['z', 's', 'x', 'o']];
+const zipArrList = zip(...zipArr);
+console.log(`zip list ${JSON.stringify(Array.from(zipArrList))}`);
+
+const zipTakeOne = compose2(curryLeft(take, 1), zip);
+const takeOne = zipTakeOne(...zipArr);
+
+const first = Array.from(takeOne());
+const second = Array.from(takeOne());
+const third = Array.from(takeOne());
+const fourth = Array.from(takeOne());
+console.log(`zip take one ${first}`);
+console.log(`zip take one ${second}`);
+console.log(`zip take one ${third}`);
+console.log(`zip take one ${fourth}`);
 

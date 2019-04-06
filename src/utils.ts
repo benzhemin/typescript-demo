@@ -128,6 +128,7 @@ export function curryLeft(fn: Function, ...rest: any[]) {
     return fn.apply(null, [...rest, arg]);
   }
 }
+
 export function uniq(arr: any[], itereeFn: Function = identity) {
   const set = new Set();
   const uniqList: any[] = [];
@@ -140,4 +141,115 @@ export function uniq(arr: any[], itereeFn: Function = identity) {
     }
   });
   return uniqList;
+}
+
+export function validator(message: string, fn: Function) {
+  const f: any = function(...rest: any[]) {
+    return fn.apply(fn, rest);
+  }
+
+  f['message'] = message;
+  return f;
+}
+
+// 表单校验简易版, errors push的信息不够, 需要扩充
+export function checker(...validators: Function[]) {
+  return function(o: any) {
+    return validators.reduce((errors: any[], check: any) => {
+      if (!check(o)) {
+        errors.push(check.message);
+      }
+      
+      return errors;
+    }, []);
+  }
+}
+
+export function condition(...validators: Function[]) {
+  return function(fn: Function, o: any) {
+    const errs = validators.reduce((errList: any[], fn: any) => {
+      if (fn(o)) {
+        errList.push(fn.message);
+      }
+      return errList;
+    }, []);
+
+    if (errs.length > 0) { throw new Error(errs.join(', '))}
+
+    return fn(o);
+  }
+}
+
+// https://gist.github.com/JamieMason/172460a36a0eaef24233e6edb2706f83
+// https://medium.com/@dtipson/creating-an-es6ish-compose-in-javascript-ac580b95104a
+// 原版本的 identity 对应多参数传递有问题. 舍弃
+export function compose(...fns: Function[]) {
+  if (fns.length < 2) throw new Error('compose functions should greater than two');
+  return fns.reduceRight(
+    (preFn, curFn) => (...args: any[]) => curFn(preFn(...args))
+  );
+}
+
+// 自己实现的版本, 比如上的版本健壮, 包含只输入一个function的情况
+export function compose2(...fns: Function[]) {
+  return function(...rest: any[]): any {
+    return fns.reduceRight((res, curFn, index) => {
+      if (index === 1) {
+        return curFn(...res);
+      }
+      return curFn(res);
+    }, rest);
+  }
+}
+
+export const not = (x: any) => !x;
+
+export function flatArr(arr: any[], depth: number) : any[]{
+  if (depth == 0) return arr;
+
+  const newArr = [];
+  for (const item of arr) {
+    if (Array.isArray(item)) {
+      newArr.push(...item);
+    } else {
+      newArr.push(item);
+    }
+  }
+
+  return flatArr(newArr, depth-1);
+}
+
+export const flatMap2 = compose2(curryRight(flatArr, 1), Array.prototype.map);
+
+export function flatMap(arr: any[], mapFn: any) {
+  return flatArr(arr.map(mapFn), 1);
+}
+
+export function cycle(times: number, arr: any[]): any[] {
+  if (times === 0) return [];
+  return arr.concat(cycle(times-1, arr));
+}
+
+export function *zip(...arrList: any[]) {
+  const iteratorList = arrList.map(arr => arr[Symbol.iterator]());
+
+  while (true) {
+    let itemList = iteratorList.map(iter => iter.next());
+    if (itemList.some(v => !!v.done)) { break; }
+    yield itemList.map(v => v.value);
+  }
+}
+
+export function take(n: number, iterable: IterableIterator<any>) {
+  let count = 0;
+
+  return function *() {
+    while (count < n) {
+      const { value, done } = iterable.next();
+      if (done) { break; }
+      yield value;
+      count += 1;
+    }
+    count = 0;
+  }
 }
