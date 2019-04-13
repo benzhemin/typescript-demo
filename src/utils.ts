@@ -140,4 +140,20 @@ export function uniq(arr: any[], itereeFn: Function = identity) {
     }
   });
   return uniqList;
+} 
+
+export function flatArr(arr: any[], depth: number = 1) {
+  if (depth === 0) return arr;
+
+  const newArr: any[] = [];
+  arr.forEach((item) => {
+    if (Array.isArray(item)) {
+      newArr.push(...item);
+    }else {
+      newArr.push(item);
+    }
+  });
+
+  flatArr(newArr, depth-1);
 }
+
