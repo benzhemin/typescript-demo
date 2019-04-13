@@ -117,17 +117,18 @@ export function curry(fn: Function) {
   }
 }
 
-export function curryRight(fn: Function, ...rest: any[]) {
+export function partialRight(fn: Function, ...rest: any[]) {
   return function(arg: any) {
     return fn.apply(null, [arg, ...rest]);
   }
 }
 
-export function curryLeft(fn: Function, ...rest: any[]) {
+export function partialLeft(fn: Function, ...rest: any[]) {
   return function(arg: any) {
     return fn.apply(null, [...rest, arg]);
   }
 }
+
 export function uniq(arr: any[], itereeFn: Function = identity) {
   const set = new Set();
   const uniqList: any[] = [];
@@ -157,3 +158,190 @@ export function flatArr(arr: any[], depth: number = 1) {
   flatArr(newArr, depth-1);
 }
 
+export function validator(message: string, fn: Function) {
+  const f: any = function(...rest: any[]) {
+    return fn.apply(fn, rest);
+  }
+
+  f['message'] = message;
+  return f;
+}
+
+// 表单校验简易版, errors push的信息不够, 需要扩充
+export function checker(...validators: Function[]) {
+  return function(o: any) {
+    return validators.reduce((errors: any[], check: any) => {
+      if (!check(o)) {
+        errors.push(check.message);
+      }
+      
+      return errors;
+    }, []);
+  }
+}
+
+export function condition(...validators: Function[]) {
+  return function(fn: Function, o: any) {
+    const errs = validators.reduce((errList: any[], fn: any) => {
+      if (fn(o)) {
+        errList.push(fn.message);
+      }
+      return errList;
+    }, []);
+
+    if (errs.length > 0) { throw new Error(errs.join(', '))}
+
+    return fn(o);
+  }
+}
+
+// https://gist.github.com/JamieMason/172460a36a0eaef24233e6edb2706f83
+// https://medium.com/@dtipson/creating-an-es6ish-compose-in-javascript-ac580b95104a
+// 原版本的 identity 对应多参数传递有问题. 舍弃
+export function compose(...fns: Function[]) {
+  if (fns.length < 2) throw new Error('compose functions should greater than two');
+  return fns.reduceRight(
+    (preFn, curFn) => (...args: any[]) => curFn(preFn(...args))
+  );
+}
+
+// 自己实现的版本, 比如上的版本健壮, 包含只输入一个function的情况
+export function compose2(...fns: Function[]) {
+  return function(...rest: any[]): any {
+    return fns.reduceRight((res, curFn, index) => {
+      if (index === 1) {
+        return curFn(...res);
+      }
+      return curFn(res);
+    }, rest);
+  }
+}
+
+export const not = (x: any) => !x;
+
+export function flat(arr: any[], depth: number) : any[]{
+  if (depth == 0) return arr;
+  if (arr.every((v) => !Array.isArray(v))) return arr;
+
+  const newArr = [];
+  for (const item of arr) {
+    if (Array.isArray(item)) {
+      newArr.push(...item);
+    } else {
+      newArr.push(item);
+    }
+  }
+
+  return flat(newArr, depth-1);
+}
+
+export const flatMap2 = compose2(partialRight(flat, 1), Array.prototype.map);
+
+export function flatMap(arr: any[], mapFn: any) {
+  return flat(arr.map(mapFn), 1);
+}
+
+export function cycle(times: number, arr: any[]): any[] {
+  if (times === 0) return [];
+  return arr.concat(cycle(times-1, arr));
+}
+
+export function *zip(...arrList: any[]) {
+  const iteratorList = arrList.map(arr => arr[Symbol.iterator]());
+
+  while (true) {
+    let itemList = iteratorList.map(iter => iter.next());
+    if (itemList.some(v => !!v.done)) { break; }
+    yield itemList.map(v => v.value);
+  }
+}
+
+export function unzip(iterable: IterableIterator<any>) {
+  let acc: any[] = [];
+
+  while (true) {
+    const { value: zipList, done } : IteratorResult<any[]> = iterable.next();
+    if (done) break;
+
+    acc = zipList.reduce((na, v) => {
+      const arr = acc.shift() || [];
+      arr.push(v);
+      na.push(arr);
+      return na;
+    }, []);
+  }
+
+  return acc;
+}
+
+export function take(n: number, iterable: IterableIterator<any>): any {
+  let count = 0;
+
+  return function *() {
+    while (count < n) {
+      const { value, done } = iterable.next();
+      if (done) { break; }
+      yield value;
+      count += 1;
+    }
+    count = 0;
+  }
+}
+
+export function andify(...preds: Array<any>) {
+  return function(argList: any[]) {
+    const everything = (ps: any[], truthy: boolean): boolean => {
+      if (ps.length <= 0) return truthy;
+
+      const [pred, ...rest] = ps;
+      return argList.every(pred) && everything(rest, truthy);
+    }
+
+    return everything(preds, true);
+  }
+}
+
+export function andify2(...preds: Array<any>) {
+  return (argList: any[]) => argList.every(o => preds.every(p => p(o)))
+}
+
+export function deepFlat(arr: any[]): any {
+  return arr.reduce((pre, cur) => {
+    if (Array.isArray(cur)) {
+      const acc = pre.concat(deepFlat(cur));
+      return acc;
+    }
+    pre.push(cur);
+    return pre;
+  }, []);
+}
+
+export function deepFlat2(arr: any): any {
+  if (Array.isArray(arr)) {
+    return [].concat.apply([], arr.map(deepFlat2));
+  } else {
+    return [arr];
+  }
+}
+
+export function repeatedly(n: number, fn: Function) {
+  return Array(n).fill(0).map(() => fn());
+}
+
+// return [start, end) number
+export function random(start: number, end: number) {
+  return start + Math.floor(Math.random() * (end - start));
+}
+
+// const tenRandom = repeatedly(10, randAscii).join('');
+export const randAscii = () => random(0, 36).toString(36);
+
+// repeatRand(20);
+// const repeatRand = compose((v:any[]) => v.join(''), partialRight(repeatedly, randAscii));
+export const repeatRand = (n: number) => {
+  const ra = function *() {
+    yield randAscii();
+  }
+
+  return Array.from(take(n, ra())).join('');
+}

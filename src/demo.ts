@@ -1,4 +1,12 @@
-import { ternExp, ternFnExp, identity, groupByProp, enhanceFind, existy, dispatch, isa } from './utils';
+import { 
+  ternExp, ternFnExp, identity, 
+  groupByProp, enhanceFind, existy, dispatch, isa, cycle, zip, 
+  compose, partialRight, take, compose2, unzip, repeatedly, 
+  randAscii, random, repeatRand 
+} from './utils';
+import { curryLeft, curryRight } from './curry';
+
+import _ from 'underscore';
 
 console.log('hellow ts');
 
@@ -200,5 +208,49 @@ function invoker(name: string, method: Function) {
 }
 */
 
+const cycleList = cycle(5, [1, 2]);
+console.log(`cycle ${JSON.stringify(cycleList)}`);
+
+const zipArr = [[1, 2, 3], ['a', 'b', 'c'], ['z', 's', 'x', 'o']];
+const zipGen = zip(...zipArr);
+console.log(`zip list ${JSON.stringify(Array.from(zipGen))}`);
+
+const zipTakeOne = compose2(curryLeft(take, 1), zip);
+const takeOne = zipTakeOne(...zipArr);
+
+const first = Array.from(takeOne());
+const second = Array.from(takeOne());
+const third = Array.from(takeOne());
+const fourth = Array.from(takeOne());
+console.log(`zip take one ${first}`);
+console.log(`zip take one ${second}`);
+console.log(`zip take one ${third}`);
+console.log(`zip take one ${fourth}`);
+
+const uzipArr = unzip(zip(...zipArr));
+console.log(`unzip ${JSON.stringify(uzipArr)}`);
+
+/*
+_.range(0, 36).map(v => {
+  console.log(`v ${v} map ${v.toString(36)}`);
+});
+*/
+
+/*
+const fruits = ['apple', 'pen', 'apple-pen'];
+const upperFruits = fruits.map((f) => f.slice(0, 1).toUpperCase() + f.slice(1));
+console.log(`fruits ${JSON.stringify(upperFruits)}`);
+*/
 
 
+const tenRandom = repeatedly(10, randAscii).join('');
+console.log(`ten rand ${tenRandom}`);
+
+
+const twRandom = repeatRand(20);
+
+console.log(`random ${twRandom}`);
+
+
+const randArr = Array(20).fill(0).map(() => random(0, 36));
+console.log(`randArr ${randArr}`);
