@@ -117,13 +117,13 @@ export function curry(fn: Function) {
   }
 }
 
-export function curryRight(fn: Function, ...rest: any[]) {
+export function partialRight(fn: Function, ...rest: any[]) {
   return function(arg: any) {
     return fn.apply(null, [arg, ...rest]);
   }
 }
 
-export function curryLeft(fn: Function, ...rest: any[]) {
+export function partialLeft(fn: Function, ...rest: any[]) {
   return function(arg: any) {
     return fn.apply(null, [...rest, arg]);
   }
@@ -204,8 +204,9 @@ export function compose2(...fns: Function[]) {
 
 export const not = (x: any) => !x;
 
-export function flatArr(arr: any[], depth: number) : any[]{
+export function flat(arr: any[], depth: number) : any[]{
   if (depth == 0) return arr;
+  if (arr.every((v) => !Array.isArray(v))) return arr;
 
   const newArr = [];
   for (const item of arr) {
@@ -216,13 +217,13 @@ export function flatArr(arr: any[], depth: number) : any[]{
     }
   }
 
-  return flatArr(newArr, depth-1);
+  return flat(newArr, depth-1);
 }
 
-export const flatMap2 = compose2(curryRight(flatArr, 1), Array.prototype.map);
+export const flatMap2 = compose2(partialRight(flat, 1), Array.prototype.map);
 
 export function flatMap(arr: any[], mapFn: any) {
-  return flatArr(arr.map(mapFn), 1);
+  return flat(arr.map(mapFn), 1);
 }
 
 export function cycle(times: number, arr: any[]): any[] {
@@ -240,7 +241,25 @@ export function *zip(...arrList: any[]) {
   }
 }
 
-export function take(n: number, iterable: IterableIterator<any>) {
+export function unzip(iterable: IterableIterator<any>) {
+  let acc: any[] = [];
+
+  while (true) {
+    const { value: zipList, done } : IteratorResult<any[]> = iterable.next();
+    if (done) break;
+
+    acc = zipList.reduce((na, v) => {
+      const arr = acc.shift() || [];
+      arr.push(v);
+      na.push(arr);
+      return na;
+    }, []);
+  }
+
+  return acc;
+}
+
+export function take(n: number, iterable: IterableIterator<any>): any {
   let count = 0;
 
   return function *() {
@@ -252,4 +271,62 @@ export function take(n: number, iterable: IterableIterator<any>) {
     }
     count = 0;
   }
+}
+
+export function andify(...preds: Array<any>) {
+  return function(argList: any[]) {
+    const everything = (ps: any[], truthy: boolean): boolean => {
+      if (ps.length <= 0) return truthy;
+
+      const [pred, ...rest] = ps;
+      return argList.every(pred) && everything(rest, truthy);
+    }
+
+    return everything(preds, true);
+  }
+}
+
+export function andify2(...preds: Array<any>) {
+  return (argList: any[]) => argList.every(o => preds.every(p => p(o)))
+}
+
+export function deepFlat(arr: any[]): any {
+  return arr.reduce((pre, cur) => {
+    if (Array.isArray(cur)) {
+      const acc = pre.concat(deepFlat(cur));
+      return acc;
+    }
+    pre.push(cur);
+    return pre;
+  }, []);
+}
+
+export function deepFlat2(arr: any): any {
+  if (Array.isArray(arr)) {
+    return [].concat.apply([], arr.map(deepFlat2));
+  } else {
+    return [arr];
+  }
+}
+
+export function repeatedly(n: number, fn: Function) {
+  return Array(n).fill(0).map(() => fn());
+}
+
+// return [start, end) number
+export function random(start: number, end: number) {
+  return start + Math.floor(Math.random() * (end - start));
+}
+
+// const tenRandom = repeatedly(10, randAscii).join('');
+export const randAscii = () => random(0, 36).toString(36);
+
+// repeatRand(20);
+// const repeatRand = compose((v:any[]) => v.join(''), partialRight(repeatedly, randAscii));
+export const repeatRand = (n: number) => {
+  const ra = function *() {
+    yield randAscii();
+  }
+
+  return Array.from(take(n, ra())).join('');
 }

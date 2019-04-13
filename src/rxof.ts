@@ -2,7 +2,7 @@ import { of, Observable, interval, from, combineLatest, range, Observer,
   Subject, ConnectableObservable, BehaviorSubject, empty, timer, race, identity 
 } from 'rxjs';
 import { map, toArray, take, scan, multicast, flatMap, switchMap, 
-  concatMap, delay, repeat, mapTo, switchAll, mergeMap, combineAll, mergeAll, delayWhen, tap, shareReplay } from 'rxjs/operators';
+  concatMap, delay, repeat, mapTo, switchAll, mergeMap, combineAll, mergeAll, delayWhen, tap, shareReplay, takeLast, bufferCount } from 'rxjs/operators';
 
 import fetch from 'node-fetch'; 
 
@@ -218,6 +218,7 @@ source$.subscribe(log);
 // fetch("http://image.baidu.com/data/imgs?col=%E7%BE%8E%E5%A5%B3&tag=%E6%B8%85%E7%BA%AF&sort=0&pn=0&rn=1000&p=channel&from=1", {"credentials":"include","headers":{"accept":"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3","accept-language":"zh-CN,zh;q=0.9,en;q=0.8,en-US;q=0.7","cache-control":"max-age=0","proxy-connection":"keep-alive","upgrade-insecure-requests":"1"},"referrerPolicy":"no-referrer-when-downgrade","body":null,"method":"GET","mode":"cors"})
 // .then(function(response: { json: () => void; }){ return response.json(); }).then(function(json: any) { console.log(JSON.stringify(json)); });
 
+/*
 const source$ = interval(1000).pipe(
   take(4), 
   tap(() => { console.log('side effect') }),
@@ -238,6 +239,14 @@ const replaySource$ = of(0).pipe(
   flatMap((x) => source$)
 );
 replaySource$.subscribe(createObserver('sourceC')); 
+*/
 
 
+const source$ = interval(500).pipe(
+  bufferCount(2, 1)
+);
+
+source$.subscribe((x) => {
+  console.log(x);
+});
 

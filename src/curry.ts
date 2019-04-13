@@ -1,4 +1,5 @@
 import { count } from "rxjs/operators";
+import { partialRight } from "./utils";
 
 export {};
 
