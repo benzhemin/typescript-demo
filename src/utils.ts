@@ -345,3 +345,17 @@ export const repeatRand = (n: number) => {
 
   return Array.from(take(n, ra())).join('');
 }
+
+export function deepFreeze(obj: any) {
+  const names = Object.getOwnPropertyNames(obj);
+
+  names.forEach((n) => {
+    const prop = obj[n];
+
+    if (typeof prop === 'object' && prop !== null) {
+      deepFreeze(prop);
+    }
+  });
+
+  return Object.freeze(obj);
+}
