@@ -176,27 +176,6 @@ function doRet(target: any, fn: Function) {
   return target;
 }
 
-function threeSumZero(numList: number[]) {
-  const tsList : Array<number[]>= [];
-
-  numList.forEach((val, index) => {
-    const restList = numList.slice(index + 1);
-
-    restList.forEach((cur, index, arr) => {
-      arr.slice(index + 1).some(v => (val + cur + v === 0) && !!tsList.push([val, cur, v]));
-    });
-  });
-
-  // 去重
-  const sortList = tsList.map(arr => arr.sort((a, b) => a - b).join('.'));
-  const resList = Array.from(new Set(sortList)).map(str => str.split('.'));
-
-  return resList;
-}
-
-const res = threeSumZero([-1, 0, 1, 2, -1, -4]);
-console.log(`res ${JSON.stringify(res)}`);
-
 /*
 function invoker(name: string, method: Function) {
   return function(target, ...rest) {
