@@ -254,3 +254,16 @@ console.log(`random ${twRandom}`);
 
 const randArr = Array(20).fill(0).map(() => random(0, 36));
 console.log(`randArr ${randArr}`);
+
+function *fabnacci() {
+  let a = 0, b = 1;
+
+  while (true) {
+    yield b;
+    [a, b] = [b, a+b];
+  }
+}
+
+const take100 = take(100, fabnacci());
+console.log(`take 100 fab ${JSON.stringify(Array.from(take100()))}`);
+
