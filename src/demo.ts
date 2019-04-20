@@ -2,7 +2,7 @@ import {
   ternExp, ternFnExp, identity, 
   groupByProp, enhanceFind, existy, dispatch, isa, cycle, zip, 
   compose, partialRight, take, compose2, unzip, repeatedly, 
-  randAscii, random, repeatRand 
+  randAscii, random, repeatRand, distinctByProp 
 } from './utils';
 import { curryLeft, curryRight } from './curry';
 
@@ -41,25 +41,14 @@ interface ByProperty {
   (cur: any) : any;
 }
 
-function distinctArry(arr: any[], getProp: ByProperty) {
-  const propMap = new Map<any, any>([]);
-
-  arr.forEach((cur) => {
-    const propKey = getProp(cur);
-    propMap.set(propKey, cur);
-  });
-
-  return Array.from(propMap.values());
-}
-
 // eg1
 const numArr = [1, 2, 2, 3, 4, 5, 6];
-const distinctNumArr = distinctArry(numArr, (cur) => cur);
+const distinctNumArr = distinctByProp(numArr, (cur: any) => cur);
 console.log(JSON.stringify(distinctNumArr));
 
 // eg2
 const objArr = [ {id: 1, name: 'a'}, {id: 2, name: 'b'}, {id:2, name: 'c'}, {id : 3, name: 'd'}];
-const distinctObjArr = distinctArry(objArr, (obj) => obj.id);
+const distinctObjArr = distinctByProp(objArr, (obj: any) => obj.id);
 console.log(JSON.stringify(distinctObjArr));
 
 const createNum = function() {
