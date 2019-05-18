@@ -74,3 +74,4 @@ function ticket(peopleInLine: number[]) {
 
 const ticketRea = ticket([25,25,50,100,25,25,25,100,25,25,50,100,25,25,25,100,50,50]);
 console.log(`res ${ticketRea}`);
+
