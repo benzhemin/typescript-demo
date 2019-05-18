@@ -1,5 +1,6 @@
-export {};
+export {}
 
+// 前缀解析
 const object = {
   'tradingPair': {
     'symbol' : ['BTC/AUD', 'ETH/AUD', 'ETH/BTC'],
