@@ -372,3 +372,18 @@ export function deepFreeze(obj: any) {
 
   return Object.freeze(obj);
 }
+
+export function distinctByProp(arr: any[], propFn: Function) {
+  const map = new Map();
+
+  arr.forEach((cur) => {
+    const key = propFn(cur);
+
+    // 以第一个出现为准
+    if (map.has(key)) return;
+
+    map.set(key, cur);
+  });
+
+  return map.values();
+}
