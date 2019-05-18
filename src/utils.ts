@@ -57,6 +57,19 @@ export function groupByProp(arr: any[], propFn: Function) {
   }, {});
 }
 
+export function maxByProp(arr: any[], propFn: Function) {
+  if (arr.length === 0) throw new Error('maxByProp arr empty');
+
+  const [max] = arr.sort((a, b) => propFn(b) - propFn(a));
+
+  /*
+  return arr.reduce((max, cur) => {
+    return propFn(max) > propFn(cur) ? max : cur;
+  });
+  */
+  return max;
+}
+
 // 用于react component identit key generator
 export function uniqueStringWithStart(start: number) {
   let count = start;

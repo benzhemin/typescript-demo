@@ -1,3 +1,5 @@
+export {}
+
 function waitSec(sec: number) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {

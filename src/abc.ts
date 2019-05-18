@@ -1,3 +1,4 @@
+export {}
 
 // 前缀解析
 const object = {
