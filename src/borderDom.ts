@@ -4,10 +4,10 @@ export {};
 
 function borderDom(d: HTMLElement) {
   d.onmouseover = function(e) {
-    this.style.border = '1px solid red';
+    (<HTMLElement>this).style.border = '1px solid red';
   };
   d.onmouseout = function(e) {
-    this.style.border = '';
+    (<HTMLElement>this).style.border = '';
   }
 }
 
