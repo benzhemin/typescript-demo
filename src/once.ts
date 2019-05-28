@@ -1,7 +1,7 @@
 export function once(fn: Function) {
   let done = false;
 
-  return (...rest: any) => {
+  return (...rest: any[]) => {
     !done && fn.apply(this, rest);
     done = true;
   }

@@ -1,6 +1,6 @@
 export {}
 
-const a = {};
+const a: { prop?: any} = {};
 Object.defineProperty(a, 'prop', {
   get() {
     return 'hello world'

@@ -391,8 +391,19 @@ export function distinctByProp(arr: any[], propFn: Function) {
 export function once(fn: Function) {
   let done = false;
 
-  return (...rest: any) => {
+  return (...rest: any[]) => {
     !done && fn.apply(this, rest);
     done = true;
   }
+}
+
+export function doOnce(fn: Function) {
+  const onceFn = once(fn);
+  onceFn();
+}
+
+// range [from to]
+export function rangeFrom(from: number = 0, to: number) {
+  const num = to - from + 1;
+  return Array.from({ length: num}, (_, index) => from + index);
 }

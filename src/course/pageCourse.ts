@@ -1,22 +1,17 @@
 import cheerio from 'cheerio';
-import axios from 'axios';
-import { once } from './utils';
 
-function fetchResource(url: string, page: number) {
-  return axios.get(url, {
-    params: { page }
-  }).then((resp => {
-    const { status, data } = resp;
-    if (status >= 200 && status < 300) {
-      // console.log(`data ${data}`);
-      return data;
-    }
-  }));
+export interface Course {
+  imgUrl: string,
+  title: string,
+  class: string,
+  date: string,
 }
 
-function parseTotal($: CheerioStatic) {
+export const parseTotal = (data) => {
+  const $ = cheerio.load(data);
+
   const lastLI = $('ul.pagination').children().last().text();
-  const numReg = /[0-9]/g;
+  const numReg = /[0-9]+/g;
 
   const matchNum = lastLI.match(numReg);
 
@@ -26,8 +21,8 @@ function parseTotal($: CheerioStatic) {
   return total;
 }
 
-function parseHTML($: CheerioStatic) {
-  
+export const parseCourseList = (data: string): Course[] =>{
+  const $ = cheerio.load(data);
 
   const parseTdFnList: any[] = [
     ($td: Cheerio) => ({ imgUrl: $td.find('img').prop('src')}),
@@ -54,28 +49,3 @@ function parseHTML($: CheerioStatic) {
 
   return courseList;
 }
-
-async function mainLogic() {
-  const url = 'https://www.socclass.com/lnedus/school/dlsyxx'; 
-
-  let curPage = 1;
-  let totalPage = 1;
-
-  while (curPage <= totalPage) {
-
-    const data = await fetchResource(url, curPage);
-    const $ = cheerio.load(data);
-    once(() => { totalPage = parseTotal($) })
-  }
-  
-
-  /*
-  fetchResource(url).then((data) => {
-    parseHTML(data);
-  });
-  */
-}
-
-mainLogic();
-
-
