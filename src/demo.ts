@@ -6,8 +6,11 @@ import {
 } from './utils';
 import { curryLeft, curryRight } from './curry';
 
+import m from './module'
+
 import _ from 'underscore';
 
+console.log(`m ${m}`);
 console.log('hellow ts');
 
 const obj  = { a:1, b:2 };
@@ -22,7 +25,7 @@ function flatArr(arr: any[], depth: number) : any[]{
   const newArr = [];
   for (const item of arr) {
     if (Array.isArray(item)) {
-      newArr.push(...item);
+      [].push.apply(newArr, item);
     } else {
       newArr.push(item);
     }
@@ -235,3 +238,4 @@ function *fabnacci() {
 const take100 = take(100, fabnacci());
 console.log(`take 100 fab ${JSON.stringify(Array.from(take100()))}`);
 
+ 
