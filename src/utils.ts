@@ -387,3 +387,12 @@ export function distinctByProp(arr: any[], propFn: Function) {
 
   return map.values();
 }
+
+export function once(fn: Function) {
+  let done = false;
+
+  return (...rest: any) => {
+    !done && fn.apply(this, rest);
+    done = true;
+  }
+}

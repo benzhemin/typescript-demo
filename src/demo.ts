@@ -25,7 +25,7 @@ function flatArr(arr: any[], depth: number) : any[]{
   const newArr = [];
   for (const item of arr) {
     if (Array.isArray(item)) {
-      newArr.push(...item);
+      [].push.apply(newArr, item);
     } else {
       newArr.push(item);
     }
