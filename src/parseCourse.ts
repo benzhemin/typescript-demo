@@ -26,8 +26,8 @@ function parseTotal($: CheerioStatic) {
   return total;
 }
 
-function parseHTML(htmlText: string) {
-  const $ = cheerio.load(htmlText);
+function parseHTML($: CheerioStatic) {
+  
 
   const parseTdFnList: any[] = [
     ($td: Cheerio) => ({ imgUrl: $td.find('img').prop('src')}),
@@ -64,8 +64,8 @@ async function mainLogic() {
   while (curPage <= totalPage) {
 
     const data = await fetchResource(url, curPage);
-
-    once(() => { totalPage = parseTotal() })
+    const $ = cheerio.load(data);
+    once(() => { totalPage = parseTotal($) })
   }
   
 
