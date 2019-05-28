@@ -59,7 +59,7 @@ function filterPrime(num: number) {
 }
 */
 
-
+/*
 function filterPrime(num: number) {
   const numList = Array.from(Array(num)).map((v, index) => index+1);
   const subSet = new Set();
@@ -75,12 +75,38 @@ function filterPrime(num: number) {
 
   return numList.filter((v, index) => !subSet.has(index));
 }
+*/
+
+function findPrimer(arr: number[]) {
+  let numList = arr;
+  let subscript = 0;
+
+  while (true) {
+    if (subscript >= numList.length) break;
+
+    const num = numList[subscript];
+
+    numList = numList.filter((v, index) => {
+      // 小于自身的不做判断
+      return index<=subscript || v % num != 0;
+    });
+
+    subscript += 1;
+  }
+  
+  return numList;
+}
 
 
+const arr = Array.from({length: 1000}, (_, index) => index+1).filter(v => v >= 2);
+
+const primeList = findPrimer(arr);
+console.log(`primeList ${JSON.stringify(primeList)}`);
+/*
 const prime = 'prime';
 console.time(prime);
 const res = filterPrime(100000);
 console.timeEnd(prime);
 console.log(`total ${res.length}`);
 console.log(`res ${JSON.stringify(res)}`);
-
+*/
