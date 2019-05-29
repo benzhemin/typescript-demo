@@ -3,7 +3,7 @@ import cheerio from 'cheerio';
 export interface Course {
   imgUrl: string,
   title: string,
-  class: string,
+  grade: string,
   date: string,
 }
 
@@ -27,7 +27,7 @@ export const parseCourseList = (data: string): Course[] =>{
   const parseTdFnList: any[] = [
     ($td: Cheerio) => ({ imgUrl: $td.find('img').prop('src')}),
     ($td: Cheerio) => ({ title: $td.find('a').text(), url: $td.find('a').prop('href') }),
-    ($td: Cheerio) => ({ class: $td.text() }),
+    ($td: Cheerio) => ({ grade: $td.text() }),
     ($td: Cheerio) => ({}),
     ($td: Cheerio) => ({ date: $td.text()})
   ];

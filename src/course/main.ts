@@ -5,9 +5,7 @@ async function mainLogic() {
   
   const courseList = await parseMainSite(url);
 
-  const gradeOneMathList = courseList.filter(o => {
-    return o.class === '一年级 数学';
-  });
+  const gradeOneMathList = courseList.filter(o => o.grade === '一年级 数学');
 
   console.log(JSON.stringify(gradeOneMathList));
 }
