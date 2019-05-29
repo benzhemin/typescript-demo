@@ -5,14 +5,29 @@ export interface UrlPage {
   page: string,
 }
 
+/*
 export function fetchResource(url: string, params: any) {
-  return axios.get(url, { params }).then((resp) => {
+  const options = {url, method: 'get', ...params} ;
+  return axios(options).then((resp) => {
     const { status, data } = resp;
     if (status >= 200 && status < 300) {
       // console.log(`data ${data}`);
       return data;
     }
   });
+}
+*/
+
+export async function fetchResource(url: string, params: any) {
+  const options = {
+    url,
+    method: 'get',
+    ...params,
+  };
+  const { status, data } = await axios(options);
+  if (status >= 200 && status < 300) {
+    return data;
+  }
 }
 
 export async function concurrentFetch(fetchList: UrlPage[], max: number = 6) {
