@@ -29,6 +29,8 @@ function *genFunc2() {
 }
 
 const genRes = genFunc(6);
+console.log(genRes[Symbol.iterator]);
+
 const y1 = genRes.next();
 console.log(`res ${JSON.stringify(y1)}`);
 const y2 = genRes.next(7);

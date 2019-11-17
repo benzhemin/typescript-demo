@@ -4,6 +4,9 @@ import { filter, toArray } from "rxjs/operators";
 import { async } from "rxjs/internal/scheduler/async";
 import { stringify } from "querystring";
 
+function filterPrime(max: number) : Array<Int> {
+  
+}
 
 function *prime(max: number): IterableIterator<any>{
   for (let cur = 1; cur < max; cur += 1) {
