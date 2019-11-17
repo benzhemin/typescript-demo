@@ -236,6 +236,6 @@ function *fabnacci() {
 }
 
 const take100 = take(100, fabnacci());
-console.log(`take 100 fab ${JSON.stringify(Array.from(take100()))}`);
+console.log(`take 100 fab ${JSON.stringify(take100)}`);
 
  
