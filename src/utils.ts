@@ -287,18 +287,22 @@ export function unzip(iterable: IterableIterator<any>) {
   return acc;
 }
 
-export function take(n: number, iterable: IterableIterator<any>): any {
-  let count = 0;
+export function take(n: number, iterable: IterableIterator<any>): any[] {
+  const res = [];
 
-  return function *() {
-    while (count < n) {
-      const { value, done } = iterable.next();
-      if (done) { break; }
-      yield value;
-      count += 1;
-    }
-    count = 0;
+  let next = iterable.next();
+  while (!next.done && n > 0) {
+    res.push(next.value);
+
+    n -= 1;
+    next = iterable.next();
   }
+
+  if (n > 0) {
+    res.push(Array.from({ length: n}));
+  }
+
+  return res;
 }
 
 export function andify(...preds: Array<any>) {
@@ -353,10 +357,11 @@ export const randAscii = () => random(0, 36).toString(36);
 // const repeatRand = compose((v:any[]) => v.join(''), partialRight(repeatedly, randAscii));
 export const repeatRand = (n: number) => {
   const ra = function *() {
-    yield randAscii();
+    while (true) {
+      yield randAscii();
+    }
   }
-
-  return Array.from(take(n, ra())).join('');
+  return take(n, ra()).join('');
 }
 
 export function deepFreeze(obj: any) {

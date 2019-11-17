@@ -43,6 +43,7 @@ const newP1 = new Promise((resolve, reject) => {
   setTimeout(() => {
     console.log('hello');
     resolve();
+    console.log('world');
   }, 3000);
 });
 
